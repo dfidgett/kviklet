@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-drop-license-table
+      author: jascha
+      changes:
+        - dropTable:
+            tableName: license

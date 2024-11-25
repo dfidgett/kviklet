@@ -1,0 +1,56 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:9.6
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./e2e/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  mysql:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mysql
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: test1234TEST
+
+  mongodb:
+    image: mongo:jammy
+    restart: always
+
+  mariadb:
+    image: mariadb:10
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+
+  kviklet-postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kviklet
+
+  kviklet:
+    build: .
+    ports:
+      - "4444:8080"
+    environment:
+      - INITIAL_USER_EMAIL=admin@admin.com
+      - INITIAL_USER_PASSWORD=admin
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://kviklet-postgres:5432/kviklet
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      - kviklet-postgres
