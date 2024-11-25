@@ -11,3 +11,5 @@ build_backend:
   stage: build
   script:
     - echo "hello world"
+    - cd backend
+    - gradle build
