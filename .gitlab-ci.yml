@@ -13,3 +13,11 @@ build_backend:
     - echo "hello world"
     - cd backend
     - ./gradlew build
+
+build_frontend:
+  stage: build
+  script:
+    - echo "hello world"
+    - cd frontend
+    - npm install
+    - npm run generate
