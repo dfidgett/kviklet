@@ -160,7 +160,7 @@ class WebSocketHandlerTest {
         val updateMessage = """
             {
                 "type": "update_content",
-                "content": "SELECT * FROM users"
+                "content": "SELECT 1 as test;"
             }
         """.trimIndent()
         session.sendMessage(TextMessage(updateMessage))
