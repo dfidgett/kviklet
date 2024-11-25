@@ -20,4 +20,4 @@ build_frontend:
     - echo "hello world"
     - cd frontend
     - npm install
-    - npm run generate
+    - npm run build
