@@ -19,12 +19,9 @@ build_backend:
   script:
     - cd backend
     - ./gradlew build -x kaptTestKotlin -x compileTestKotlin --no-daemon
-    - ls
-    - ls ..
-    - ls build
   artifacts:
     paths:
-      - backend/home/gradle/src/build/libs/*.jar
+      - backend/build/libs/*.jar
     expire_in: 1 day
 
 build_frontend:
@@ -44,4 +41,4 @@ construct_container:
   stage: package
   script:
     - ls
-    - ls backend
+    - ls backend/build/libs
