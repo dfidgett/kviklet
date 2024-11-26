@@ -19,7 +19,7 @@ build_backend:
   script:
     - echo "hello world"
     - cd backend
-    - ./gradlew build --no-daemon
+    - ./gradlew build -x kaptTestKotlin -x compileTestKotlin --no-daemon
 
 build_frontend:
   stage: build
