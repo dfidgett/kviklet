@@ -5,7 +5,7 @@ include:
 
 variables:
   JAVA_VERSION: 17
-  NODE_VERSION: 14
+  NODE_VERSION: 20
 
 default:
   image: $AWS_ECR_REPOSITORY/landbay/devops/ci/ci-pipeline-images/backend:$JAVA_VERSION
