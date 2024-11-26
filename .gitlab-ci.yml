@@ -40,4 +40,4 @@ construct_container:
     entrypoint: [ "" ]
   stage: package
   script:
-    - /kaniko/executor --context . --dockerfile "Dockerfile"
+    - /kaniko/executor --context . --dockerfile "Dockerfile" --no-push
