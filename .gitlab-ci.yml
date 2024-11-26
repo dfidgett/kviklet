@@ -40,6 +40,6 @@ construct_container:
     entrypoint: [ "" ]
   stage: package
   dependencies:
-    - build-backend
+    - build_backend
   script:
     - ls backend/home/gradle/src/build/libs
