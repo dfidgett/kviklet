@@ -42,4 +42,4 @@ construct_container:
     - .gitlab-eks-lg-build
   stage: package
   script:
-    - /kaniko/executor --context . --dockerfile "Dockerfile" --no-push --no-push-cache
+    - /kaniko/executor --context . --dockerfile "Dockerfile" --no-push
