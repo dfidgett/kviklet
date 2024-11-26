@@ -1,5 +1,7 @@
 include:
-  - local: gitlab-eks/common/gitlab_eks_resources.yml
+  - project: "landbay/devops/ci/ci_pipeline"
+    ref: "master"
+    file: gitlab-eks/common/gitlab_eks_resources.yml
 
 variables:
   JAVA_VERSION: 17
