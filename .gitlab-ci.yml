@@ -8,6 +8,8 @@ stages:
   - build
 
 build_backend:
+  extends:
+    - .gitlab-eks-lg-build
   stage: build
   script:
     - echo "hello world"
