@@ -1,3 +1,6 @@
+include:
+  - local: gitlab-eks/common/gitlab_eks_resources.yml
+
 variables:
   JAVA_VERSION: 17
 
