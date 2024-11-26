@@ -39,7 +39,6 @@ construct_container:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [ "" ]
   stage: package
-  dependencies:
-    - build_backend
   script:
-    - ls backend/home/gradle/src/build/libs
+    - ls
+    - ls backend
