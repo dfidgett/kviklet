@@ -38,6 +38,8 @@ construct_container:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [ "" ]
+  extends:
+    - .gitlab-eks-lg-build
   stage: package
   script:
-    - /kaniko/executor --context . --dockerfile "Dockerfile" --no-push
+    - /kaniko/executor --context . --dockerfile "Dockerfile" --no-push --no-push-cache
