@@ -9,6 +9,7 @@ variables:
 
 stages:
   - build
+  - package
 
 build_backend:
   image: $AWS_ECR_REPOSITORY/landbay/devops/ci/ci-pipeline-images/backend:$JAVA_VERSION
@@ -18,6 +19,10 @@ build_backend:
   script:
     - cd backend
     - ./gradlew build -x kaptTestKotlin -x compileTestKotlin --no-daemon
+  artifacts:
+    paths:
+      - backend/home/gradle/src/build/libs/*.jar
+    expire_in: 1 day
 
 build_frontend:
   image: $AWS_ECR_REPOSITORY/landbay/devops/ci/ci-pipeline-images/frontend:$NODE_VERSION
@@ -28,3 +33,13 @@ build_frontend:
     - cd frontend
     - npm install
     - npm run build
+
+construct_container:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [ "" ]
+  stage: package
+  dependencies:
+    - build-backend
+  script:
+    - ls backend/home/gradle/src/build/libs
