@@ -121,3 +121,8 @@ tasks.withType<Test> {
 tasks.withType<BootRun> {
     systemProperty("spring.profiles.active", System.getProperty("spring.profiles.active"))
 }
+
+//only produce one jar
+tasks.getByName<Jar>("jar") {
+    enabled = false
+}
