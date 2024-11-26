@@ -37,6 +37,13 @@ class SessionService(
     @Policy(Permission.EXECUTION_REQUEST_EXECUTE)
     fun executeStatement(sessionId: LiveSessionId, statement: String): ExecutionResult {
         val session = sessionAdapter.findById(sessionId)
+
+        //This works because the reviewer of the live session cannot edit the console content
+        //This will need to change if we allow this in the future
+        if (statement != session.consoleContent) {
+            throw IllegalArgumentException("SQL to execute did not match the content on the console")
+        }
+
         return executionRequestService.execute(
             session.executionRequest.request.id!!,
             statement,
@@ -44,7 +51,7 @@ class SessionService(
         )
     }
 
-    @Policy(Permission.EXECUTION_REQUEST_EXECUTE)
+    @Policy(Permission.EXECUTION_REQUEST_EDIT)
     fun updateContent(sessionId: LiveSessionId, consoleContent: String): LiveSession =
         sessionAdapter.updateLiveSession(sessionId, consoleContent)
 

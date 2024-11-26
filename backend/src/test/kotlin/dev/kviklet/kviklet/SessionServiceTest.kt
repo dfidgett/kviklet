@@ -76,7 +76,9 @@ class SessionServiceTest {
 
     @AfterEach
     fun cleanup() {
-        sessionService.executeStatement(testLiveSession, "DROP TABLE IF EXISTS test_table")
+        val cleanupSql = "DROP TABLE IF EXISTS test_table"
+        liveSessionHelper.updateLiveSession(testLiveSession, cleanupSql)
+        sessionService.executeStatement(testLiveSession, cleanupSql)
         liveSessionHelper.deleteAll()
         executionRequestHelper.deleteAll()
         connectionHelper.deleteAll()
@@ -85,6 +87,8 @@ class SessionServiceTest {
 
     @Test
     fun testExecuteStatementSimpleSelect() {
+        liveSessionHelper.updateLiveSession(testLiveSession, "SELECT 1 as test")
+
         val result = sessionService.executeStatement(testLiveSession, "SELECT 1 as test")
 
         assertTrue(result is DBExecutionResult)
@@ -105,6 +109,8 @@ class SessionServiceTest {
             INSERT INTO test_table VALUES (1, 'Alice'), (2, 'Bob');
             SELECT * FROM test_table ORDER BY id;
         """.trimIndent()
+
+        liveSessionHelper.updateLiveSession(testLiveSession, multipleStatements)
 
         val result = sessionService.executeStatement(testLiveSession, multipleStatements)
 
@@ -134,13 +140,17 @@ class SessionServiceTest {
 
     @Test
     fun testExecuteStatementDataModification() {
+        var sql = "CREATE TABLE test_table (id INT, name VARCHAR(50))"
         // Setup: Create a table
-        sessionService.executeStatement(testLiveSession, "CREATE TABLE test_table (id INT, name VARCHAR(50))")
+        liveSessionHelper.updateLiveSession(testLiveSession, sql)
+        sessionService.executeStatement(testLiveSession, sql)
 
         // Test INSERT
+        sql = "INSERT INTO test_table VALUES (1, 'Alice'), (2, 'Bob')"
+        liveSessionHelper.updateLiveSession(testLiveSession, sql)
         val insertResult = sessionService.executeStatement(
             testLiveSession,
-            "INSERT INTO test_table VALUES (1, 'Alice'), (2, 'Bob')",
+            sql,
         )
         assertTrue(insertResult is DBExecutionResult)
         insertResult as DBExecutionResult
@@ -148,9 +158,11 @@ class SessionServiceTest {
         assertEquals(2, (insertResult.results[0] as UpdateQueryResult).rowsUpdated)
 
         // Test UPDATE
+        sql = "UPDATE test_table SET name = 'Charlie' WHERE id = 1"
+        liveSessionHelper.updateLiveSession(testLiveSession, sql)
         val updateResult = sessionService.executeStatement(
             testLiveSession,
-            "UPDATE test_table SET name = 'Charlie' WHERE id = 1",
+            sql,
         )
         assertTrue(updateResult is DBExecutionResult)
         updateResult as DBExecutionResult
@@ -158,14 +170,18 @@ class SessionServiceTest {
         assertEquals(1, (updateResult.results[0] as UpdateQueryResult).rowsUpdated)
 
         // Test DELETE
-        val deleteResult = sessionService.executeStatement(testLiveSession, "DELETE FROM test_table WHERE id = 2")
+        sql = "DELETE FROM test_table WHERE id = 2"
+        liveSessionHelper.updateLiveSession(testLiveSession, sql)
+        val deleteResult = sessionService.executeStatement(testLiveSession, sql)
         assertTrue(deleteResult is DBExecutionResult)
         deleteResult as DBExecutionResult
         assertTrue(deleteResult.results[0] is UpdateQueryResult)
         assertEquals(1, (deleteResult.results[0] as UpdateQueryResult).rowsUpdated)
 
         // Verify final state
-        val selectResult = sessionService.executeStatement(testLiveSession, "SELECT * FROM test_table")
+        sql = "SELECT * FROM test_table"
+        liveSessionHelper.updateLiveSession(testLiveSession, sql)
+        val selectResult = sessionService.executeStatement(testLiveSession, sql)
         assertTrue(selectResult is DBExecutionResult)
         selectResult as DBExecutionResult
         assertTrue(selectResult.results[0] is RecordsQueryResult)
