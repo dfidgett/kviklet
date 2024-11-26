@@ -7,20 +7,17 @@ variables:
   JAVA_VERSION: 17
   NODE_VERSION: 20
 
-default:
-  image: $AWS_ECR_REPOSITORY/landbay/devops/ci/ci-pipeline-images/backend:$JAVA_VERSION
-
 stages:
   - build
 
-#build_backend:
-#  extends:
-#    - .gitlab-eks-lg-build
-#  stage: build
-#  script:
-#    - echo "hello world"
-#    - cd backend
-#    - ./gradlew build -x kaptTestKotlin -x compileTestKotlin --no-daemon
+build_backend:
+  image: $AWS_ECR_REPOSITORY/landbay/devops/ci/ci-pipeline-images/backend:$JAVA_VERSION
+  extends:
+    - .gitlab-eks-lg-build
+  stage: build
+  script:
+    - cd backend
+    - ./gradlew build -x kaptTestKotlin -x compileTestKotlin --no-daemon
 
 build_frontend:
   image: $AWS_ECR_REPOSITORY/landbay/devops/ci/ci-pipeline-images/frontend:$NODE_VERSION
@@ -28,7 +25,6 @@ build_frontend:
     - .gitlab-eks-lg-build
   stage: build
   script:
-    - echo "hello world"
     - cd frontend
     - npm install
     - npm run build
