@@ -19,6 +19,7 @@ build_backend:
   script:
     - cd backend
     - ./gradlew build -x kaptTestKotlin -x compileTestKotlin --no-daemon
+    - ls /home/gradle/src/build/libs
   artifacts:
     paths:
       - backend/home/gradle/src/build/libs/*.jar
