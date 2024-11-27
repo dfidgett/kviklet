@@ -2,7 +2,6 @@ include:
   - project: "landbay/devops/ci/ci_pipeline"
     ref: "kviklet-docker-deploy"
     file:
-      - gitlab-eks/devops/ci_docker_image_deploy.yml
       - gitlab-eks/common/rules.yml
       - gitlab-eks/common/jobs/job_pull_pipeline_functions.yml
       - gitlab-eks/common/jobs/job_notify_user_on_error.yml
