@@ -81,11 +81,11 @@ deploy_to_uat:
 
 
 # region notify on error Job
-notify_user_on_error:
-  rules:
-    - !reference [ .if-master-branch, rules ]
-  script:
-    - |
-      send_direct_channel_message ":warning: Landbay kviklet Pipeline failed: $CI_PIPELINE_URL" "#prod-incidents"
+#notify_user_on_error:
+#  rules:
+#    - !reference [ .if-master-branch, rules ]
+#  script:
+#    - |
+#      send_direct_channel_message ":warning: Landbay kviklet Pipeline failed: $CI_PIPELINE_URL" "#prod-incidents"
 # endregion notify on error Job
 
