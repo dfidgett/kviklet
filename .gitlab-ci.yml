@@ -7,6 +7,9 @@ include:
       - gitlab-eks/common/jobs/job_notify_user_on_error.yml
 
 
+default:
+  image:
+    name: $AWS_ECR_REPOSITORY/landbay/devops/ci/ci-pipeline-images/devops:latest
 
 workflow:
   rules:
