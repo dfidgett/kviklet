@@ -71,6 +71,7 @@ deploy_to_uat:
     - export SERVICE_IMAGE="ghcr.io/kviklet/kviklet" # TODO Change to Landbay ECR
     - export SERVICE_IMAGE_BRANCH_BUILD_ID_TAG="0.5.1" # TODO Change this so that it is picked up from build number
     - export FLUX_INFRA_FILENAME="70_kviklet"
+    - export SERVICE_NAME="kviklet"
   script:
     - source $CI_DEVOPS_FUNCTIONS/deploy_docker_image.sh
     - echo "deploy uat stage"
