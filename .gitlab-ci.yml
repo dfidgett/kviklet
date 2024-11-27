@@ -22,6 +22,7 @@ workflow:
 variables:
   JAVA_VERSION: 17
   NODE_VERSION: 20
+  CI_PIPELINE_BRANCH: kviklet-docker-deploy
 
 stages:
 #  - build
