@@ -51,7 +51,7 @@ construct_container:
     - echo $BASE_REPOSITORY_PATH
     - echo $TAG_MR_PREFIX
     - echo $TAG_BUILD_PREFIX
-    - /kaniko/executor --context . --dockerfile "Dockerfile" --destination $$BASE_REPOSITORY_PATH":"$TAG_MR_PREFIX
+    - /kaniko/executor --context . --dockerfile "Dockerfile" --destination ${BASE_REPOSITORY_PATH}":"${TAG_MR_PREFIX}
 
 
 #DEPLOY TO UAT
