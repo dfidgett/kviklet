@@ -41,5 +41,19 @@ construct_container:
   extends:
     - .gitlab-eks-lg-build
   stage: package
+  variables:
+    BASE_REPOSITORY_PATH: "${AWS_ECR_REPOSITORY}/landbay/${CI_PROJECT_NAME}"
+    TAG_MR_PREFIX: "ci-${CI_COMMIT_REF_NAME}"
+    TAG_BUILD_PREFIX: "ci-${CI_COMMIT_REF_NAME}-${CI_JOB_ID}"
+  before_script:
+#    - source ./common/functions/init-kaniko.sh
   script:
-    - /kaniko/executor --context . --dockerfile "Dockerfile" --no-push
+    - echo $BASE_REPOSITORY_PATH
+    - echo $TAG_MR_PREFIX
+    - echo $TAG_BUILD_PREFIX
+#    - /kaniko/executor --context . --dockerfile "Dockerfile" --destination TODO-ECR-REPO
+
+
+#DEPLOY TO UAT
+
+#DEPLOY TO PROD
