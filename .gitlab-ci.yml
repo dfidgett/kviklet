@@ -46,12 +46,12 @@ construct_container:
     TAG_MR_PREFIX: "ci-${CI_COMMIT_REF_NAME}"
     TAG_BUILD_PREFIX: "ci-${CI_COMMIT_REF_NAME}-${CI_JOB_ID}"
   before_script:
-#    - source ./common/functions/init-kaniko.sh
+    - source ./common/functions/init-kaniko.sh
   script:
     - echo $BASE_REPOSITORY_PATH
     - echo $TAG_MR_PREFIX
     - echo $TAG_BUILD_PREFIX
-#    - /kaniko/executor --context . --dockerfile "Dockerfile" --destination TODO-ECR-REPO
+    - /kaniko/executor --context . --dockerfile "Dockerfile" --destination $$BASE_REPOSITORY_PATH":"$TAG_MR_PREFIX
 
 
 #DEPLOY TO UAT
