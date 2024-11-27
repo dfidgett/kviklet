@@ -1,7 +1,21 @@
 include:
   - project: "landbay/devops/ci/ci_pipeline"
-    ref: "master"
-    file: gitlab-eks/common/gitlab_eks_resources.yml
+    ref: "kviklet-docker-deploy"
+    file:
+      - gitlab-eks/devops/ci_docker_image_deploy.yml
+      - gitlab-eks/common/rules.yml
+      - gitlab-eks/common/jobs/job_pull_pipeline_functions.yml
+      - gitlab-eks/common/jobs/job_notify_user_on_error.yml
+
+
+
+workflow:
+  rules:
+    - !reference [ .only-if-landbay, rules ]
+    - !reference [ .if-manually-triggered-from-ui, rules ]
+    - !reference [ .if-master-branch, rules ]
+    - !reference [ .if-a-merge-request-pipeline, rules ]
+
 
 variables:
   JAVA_VERSION: 17
@@ -9,7 +23,8 @@ variables:
 
 stages:
 #  - build
-  - package
+#  - package
+  - deploy
 
 #build_backend:
 #  image: $AWS_ECR_REPOSITORY/landbay/devops/ci/ci-pipeline-images/backend:$JAVA_VERSION
@@ -34,12 +49,39 @@ stages:
 #    - npm install
 #    - npm run build
 
-construct_container:
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [ "" ]
-  extends:
-    - .gitlab-eks-lg-build
-  stage: package
+#construct_container:
+#  image:
+#    name: gcr.io/kaniko-project/executor:debug
+#    entrypoint: [ "" ]
+#  extends:
+#    - .gitlab-eks-lg-build
+#  stage: package
+#  script:
+#    - /kaniko/executor --context . --dockerfile "Dockerfile" --no-push
+
+deploy_to_uat:
+  stage: deploy
+  environment:
+    name: uat
+    deployment_tier: staging
+  before_script:
+    - export SERVICE_IMAGE="ghcr.io/kviklet/kviklet" # TODO Change to Landbay ECR
+    - export SERVICE_IMAGE_BRANCH_BUILD_ID_TAG="0.5.1" # TODO Change this so that it is picked up from build number
+    - export FLUX_INFRA_FILENAME="70_kviklet"
   script:
-    - /kaniko/executor --context . --dockerfile "Dockerfile" --no-push
+    - source $CI_DEVOPS_FUNCTIONS/deploy_docker_image.sh
+    - echo "deploy uat stage"
+    - deploy_service uat $SERVICE_NAME $FLUX_INFRA_FILENAME $SERVICE_IMAGE $SERVICE_IMAGE_BRANCH_BUILD_ID_TAG "gitlab"
+
+
+
+
+# region notify on error Job
+notify_user_on_error:
+  rules:
+    - !reference [ .if-master-branch, rules ]
+  script:
+    - |
+      send_direct_channel_message ":warning: Landbay kviklet Pipeline failed: $CI_PIPELINE_URL" "#prod-incidents"
+# endregion notify on error Job
+
