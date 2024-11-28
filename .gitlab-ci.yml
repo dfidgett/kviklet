@@ -38,7 +38,7 @@ build_and_push_image:
     entrypoint: [ "" ]
   extends:
     - .gitlab-eks-lg-build
-  stage: package
+  stage: build
   before_script:
     - source ./.ci/init-kaniko.sh
   script:
