@@ -8,33 +8,10 @@ variables:
   NODE_VERSION: 20
 
 stages:
-#  - build
-  - package
+  - build
+  - deploy
 
-#build_backend:
-#  image: $AWS_ECR_REPOSITORY/landbay/devops/ci/ci-pipeline-images/backend:$JAVA_VERSION
-#  extends:
-#    - .gitlab-eks-lg-build
-#  stage: build
-#  script:
-#    - cd backend
-#    - ./gradlew build -x kaptTestKotlin -x compileTestKotlin --no-daemon
-#  artifacts:
-#    paths:
-#      - backend/build/libs/*.jar
-#    expire_in: 1 day
-#
-#build_frontend:
-#  image: $AWS_ECR_REPOSITORY/landbay/devops/ci/ci-pipeline-images/frontend:$NODE_VERSION
-#  extends:
-#    - .gitlab-eks-lg-build
-#  stage: build
-#  script:
-#    - cd frontend
-#    - npm install
-#    - npm run build
-
-construct_container:
+build_and_push_image:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [ "" ]
