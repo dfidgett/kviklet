@@ -1,4 +1,4 @@
 include:
   - project: "landbay/devops/ci/ci_pipeline"
-    ref: "kviklet-docker-deploy"
+    ref: "master"
     file: "gitlab-eks/backend/kviklet_service.yml"
