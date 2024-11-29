@@ -25,8 +25,8 @@ variables:
   NODE_VERSION: 20
   CI_PIPELINE_BRANCH: kviklet-docker-deploy
   BASE_REPOSITORY_PATH: "${AWS_ECR_REPOSITORY}/landbay/${CI_PROJECT_NAME}"
-  TAG_MR_PREFIX: "ci-${CI_COMMIT_REF_NAME}"
-  TAG_BUILD_PREFIX: "ci-${CI_COMMIT_REF_NAME}-${CI_JOB_ID}"
+  TAG_BUILD_LATEST: "ci-${CI_COMMIT_REF_NAME}-latest"
+  TAG_BUILD_NUMBER: "ci-${CI_COMMIT_REF_NAME}-${CI_JOB_ID}"
 
 stages:
   - build
@@ -43,9 +43,9 @@ build_and_push_image:
     - source ./.ci/init-kaniko.sh
   script:
     - echo $BASE_REPOSITORY_PATH
-    - echo $TAG_MR_PREFIX
-    - echo $TAG_BUILD_PREFIX
-    - /kaniko/executor --context . --dockerfile "Dockerfile" --destination ${BASE_REPOSITORY_PATH}":"${TAG_MR_PREFIX}
+    - echo $TAG_BUILD_LATEST
+    - echo $TAG_BUILD_NUMBER
+    - /kaniko/executor --context . --dockerfile "Dockerfile" --destination ${BASE_REPOSITORY_PATH}":"${TAG_BUILD_LATEST} --destination ${BASE_REPOSITORY_PATH}":"${TAG_BUILD_NUMBER}
 
 
 #DEPLOY TO UAT
@@ -54,15 +54,15 @@ deploy_to_uat:
   environment:
     name: uat
     deployment_tier: staging
+  rules:
+    - !reference [ .if-master-branch, rules ]
   before_script:
-    - export SERVICE_IMAGE="ghcr.io/kviklet/kviklet" # TODO Change to Landbay ECR
-    - export SERVICE_IMAGE_BRANCH_BUILD_ID_TAG="0.5.1" # TODO Change this so that it is picked up from build number
     - export FLUX_INFRA_FILENAME="70_kviklet"
     - export SERVICE_NAME="kviklet"
   script:
     - source $CI_DEVOPS_FUNCTIONS/deploy_docker_image.sh
     - echo "deploy uat stage"
-    - deploy_service uat $SERVICE_NAME $FLUX_INFRA_FILENAME $BASE_REPOSITORY_PATH $TAG_MR_PREFIX "gitlab"
+    - deploy_service uat $SERVICE_NAME $FLUX_INFRA_FILENAME $BASE_REPOSITORY_PATH $TAG_BUILD_NUMBER "gitlab"
 
 
 #DEPLOY TO PROD
