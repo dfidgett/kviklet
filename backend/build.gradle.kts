@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-    id("org.springframework.boot") version "3.1.2"
+    id("org.springframework.boot") version "3.4.0"
     id("io.spring.dependency-management") version "1.0.15.RELEASE"
     kotlin("jvm") version "1.9.24"
     kotlin("plugin.spring") version "1.9.24"
@@ -50,6 +50,7 @@ dependencies {
     implementation("org.springframework.security:spring-security-ldap")
     implementation("org.springframework.ldap:spring-ldap-core")
     implementation("org.springframework.boot:spring-boot-devtools")
+    implementation("io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4")
 
     implementation("org.springframework.security:spring-security-acl")
     implementation("org.springframework.security:spring-security-config")
@@ -120,4 +121,9 @@ tasks.withType<Test> {
 
 tasks.withType<BootRun> {
     systemProperty("spring.profiles.active", System.getProperty("spring.profiles.active"))
+}
+
+//only produce one jar
+tasks.getByName<Jar>("jar") {
+    enabled = false
 }
