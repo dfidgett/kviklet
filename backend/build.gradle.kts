@@ -50,6 +50,7 @@ dependencies {
     implementation("org.springframework.security:spring-security-ldap")
     implementation("org.springframework.ldap:spring-ldap-core")
     implementation("org.springframework.boot:spring-boot-devtools")
+    implementation("io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4")
 
     implementation("org.springframework.security:spring-security-acl")
     implementation("org.springframework.security:spring-security-config")

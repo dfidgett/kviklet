@@ -1,0 +1,4 @@
+aws:
+  secretsmanager:
+    enabled: true
+    fail-fast: false # spring will look for lots of profile specific secrets which won't exist so don't allow this to stop the app from starting up
