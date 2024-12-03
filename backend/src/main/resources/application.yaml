@@ -17,6 +17,3 @@ app:
   name: "Kviklet"
 cors:
   allowedOrigins: "http://localhost:5173"
-aws:
-  secretsmanager:
-    enabled: false
