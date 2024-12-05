@@ -1,17 +1,14 @@
 package dev.kviklet.kviklet.db.util
 
-import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.MappedSuperclass
-import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.util.ProxyUtils
 
 @MappedSuperclass
 open class BaseEntity {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "dev.kviklet.kviklet.db.util.IdGenerator")
+    @KvikletGeneratedId
     var id: String? = null
 
     override fun equals(other: Any?): Boolean {
