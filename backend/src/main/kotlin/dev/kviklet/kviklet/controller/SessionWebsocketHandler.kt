@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.kviklet.kviklet.db.User
 import dev.kviklet.kviklet.db.UserId
+import dev.kviklet.kviklet.security.CustomOidcUser
 import dev.kviklet.kviklet.security.UserDetailsWithId
 import dev.kviklet.kviklet.service.UserService
 import dev.kviklet.kviklet.service.dto.DBExecutionResult
@@ -15,6 +16,7 @@ import dev.kviklet.kviklet.service.websocket.SessionService
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
@@ -75,7 +77,14 @@ class SessionWebsocketHandler(
             ExecutionRequestId(requestId),
         )
         sessionToLiveSessionMap[session.id] = liveSession.id!!
-        val userDetailsWithId = SecurityContextHolder.getContext().authentication.principal as UserDetailsWithId
+        val principal = SecurityContextHolder.getContext().authentication.principal
+
+        val userDetailsWithId = when (principal) {
+            is UserDetailsWithId -> principal
+            is OidcUser -> (principal as CustomOidcUser).getUserDetails()
+            else -> throw RuntimeException("Unknown principal type: ${principal.javaClass}")
+        }
+
         logger.info("User id: ${userDetailsWithId.id}")
         val user = userService.getUser(UserId(userDetailsWithId.id))
 
